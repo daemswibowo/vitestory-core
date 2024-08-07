@@ -60,17 +60,24 @@ export const mustacheUtils = {
  * @param {object} options - Optional object containing additional properties and values.
  * @return {object} The template view object with additional properties and values.
  */
-export const buildTemplateView = (options?: any) => ({
-  ...options,
-  rsvp_form: `<div id="rsvp-attendance-form"></div>`,
-  util: mustacheUtils,
-  extras: [
-    `<script src="${process.env.NEXT_PUBLIC_SITE_URL}/dist/vitestory@rsvpAttendance-v0.1.0.js"></script>
-      <script>
-        RSVP('rsvp-attendance-form', {slug: "{{slug}}"});
-      </script>`,
-  ],
-});
+export const buildTemplateView = (options?: any) => {
+  const view = {
+    ...options,
+    rsvp_form: `<div id="rsvp-attendance-form"></div>`,
+    audio_player: `{{#audio_url}}<div id="vs-audio-player"></div>{{/audio_url}}`,
+    util: mustacheUtils,
+    extras: [
+      `<script src="${process.env.NEXT_PUBLIC_SITE_URL}/dist/vitestory@rsvpAttendance-v0.1.0.js"></script>
+        <script>
+          RSVP('rsvp-attendance-form', {slug: "{{slug}}"});
+        </script>`,
+      `{{#audio_url}}<script src="${process.env.NEXT_PUBLIC_SITE_URL}/dist/vitestory@audioPlayer-v0.1.0.js"></script>
+      <script>document.body.innerHTML += '<div style="position: fixed; bottom: 0; right: 0; padding-right: 20px; padding-bottom: 20px; z-index: 999;" id="vs-audio-player"></div>';AudioPlayer('vs-audio-player', {src: "{{{audio_url}}}"});</script>{{/audio_url}}`,
+    ],
+  };
+
+  return view;
+};
 
 /**
  * Renders a template by replacing placeholders in the given HTML string with values from the view object.
